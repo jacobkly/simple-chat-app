@@ -25,9 +25,26 @@ const io = new Server(expressServer, {
 io.on('connection', socket => {
     console.log(`User ${socket.id} connected`)
 
+    // socket.emit -> upon connection - message to user
+    socket.emit('message', "Welcome to the Simple Chat App!")
+
+    // socket.broadcast.emit -> upon connection - message to all others
+    socket.broadcast.emit('message', `User ${socket.id.substring(0, 5)} connected`)
+
+    // listening for a message event
     socket.on('message', data => {
         console.log(data)
-        // emit only - message to all on server
+        // io.emit only -> message to all on server
         io.emit('message', `${socket.id.substring(0, 5)}: ${data}`)
+    })
+
+    // listening for user disconnection - message to all others
+    socket.on('disconnect', () => {
+        socket.broadcast.emit('message', `User ${socket.id.substring(0, 5)} disconnected`)
+    })
+
+    // listen for typing activity
+    socket.on('activity', (name) => {
+        socket.broadcast.emit('activity', name)
     })
 })
