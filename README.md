@@ -1,4 +1,4 @@
 # Simple Chat App 
 
-using node.js socket.io
+using node.js and socket.io
 
