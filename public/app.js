@@ -1,3 +1,4 @@
+// more information on deploying the chat app on Dave Gray's last video for this chat app
 const socket = io('ws://localhost:3500')
 
 // selectors
