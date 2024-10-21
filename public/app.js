@@ -93,7 +93,7 @@ function showUsers(users) {
         usersList.innerHTML = `<em>Users in ${chatRoom.value}:</em>`
         users.forEach((user, i) => {
             usersList.textContent += ` ${user.name}`
-            if (user.length > 1 && i !== users.length - 1) {
+            if (users.length > 1 && i !== users.length - 1) {
                 usersList.textContent += ","
             }
         })
@@ -102,9 +102,9 @@ function showUsers(users) {
 
 // shows all active rooms
 function showRooms(rooms) {
-    usersList.textContent = ''
+    roomList.textContent = ''
     if (rooms) {
-        roomList.innerHTML = `<em>Active Rooms:</em>`
+        roomList.innerHTML = '<em>Active Rooms:</em>'
         rooms.forEach((room, i) => {
             roomList.textContent += ` ${room}`
             if (rooms.length > 1 && i !== rooms.length - 1) {
