@@ -79,19 +79,42 @@ io.on('connection', socket => {
 
     // listening for user disconnection - message to all others
     socket.on('disconnect', () => {
-        socket.broadcast.emit('message', `User ${socket.id.substring(0, 5)} disconnected`)
+        const user = getUser(socket.id)
+        userLeavesApp(socket.id)
+
+        if (user) {
+            // sends message to everyone since user has left the room already
+            io.to(user.room).emit('message', buildMsg(ADMIN, `${user.name} has left the room`))
+
+            // update user list
+            io.to(user.room).emit('userList', {
+                users: getUsersInRoom(user.room)
+            })
+
+            // update room list since last user might have left
+            io.emit('roomList', {
+                rooms: getAllActiveRooms()
+            })
+        }
+
+        console.log(`User ${socket.id} disconnected`)
     })
 
     // listening for a message event
-    socket.on('message', data => {
-        console.log(data)
-        // io.emit only -> message to all on server
-        io.emit('message', `${socket.id.substring(0, 5)}: ${data}`)
+    socket.on('message', ({ name, text }) => {
+        const room = getUser(socket.id)?.room
+        if (room) {
+            io.to(room).emit('message', buildMsg(name, text))
+        }
     })
 
     // listen for typing activity
     socket.on('activity', (name) => {
-        socket.broadcast.emit('activity', name)
+        const room = getUser(socket.id)?.room
+        if (room) {
+            // broadcast sends to everyone else
+            socket.broadcast.to(room).emit('activity', name)
+        }
     })
 })
 
